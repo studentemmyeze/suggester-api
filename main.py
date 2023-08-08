@@ -1,3 +1,5 @@
+# uvicorn main:app --reload
+
 from typing import Optional
 
 from fastapi import FastAPI
