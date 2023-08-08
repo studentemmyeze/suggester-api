@@ -127,7 +127,7 @@ def read_item(item_id: int, q: Optional[str] = None):
 
 @app.get("/api/status")
 async def check_status():
-    return {"message": f"Check status {apiUrl}"}
+    return {"message": f"Check status:: {apiUrl}"}
 
 # score: int, department:str, sub1:str, sub2:str, sub3:str
 @app.get("/api/suggest-departments2/{aNo}")
