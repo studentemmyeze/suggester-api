@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from urllib.parse import unquote
 from urllib.parse import urlparse
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 # Load environment variables from .env file
 from dotenv import load_dotenv
 
@@ -119,7 +120,7 @@ course_dict = {
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello Suggester API"}
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
@@ -738,7 +739,7 @@ def suggestCourses(anArrayList):
 
 
 def getCoursesCutOffList():
-    import requests
+
     url = apiUrl + '/api/check-depts-cutoff'
     response = requests.get(url)
     print(".....querying DB for courses cutoff")
