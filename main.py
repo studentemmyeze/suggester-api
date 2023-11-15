@@ -883,9 +883,15 @@ async def getCurrentGames():
     try:
         for record in result:
             print(record)
+            print(record.rawGames.properties)
 
     except:
         print("ERROR@Get-Current-Games")
+
+    try:
+        return {"status": 200, "gameList": record}
+    except:
+        return {"status": 500,"gameList": []}
 
 
 
