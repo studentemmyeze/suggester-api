@@ -890,7 +890,7 @@ async def getCurrentGames(subs):
 
 
 
-@app.get("/api/save-vetted-games")
-async def saveVettedGames(subs):
+# @app.get("/api/save-vetted-games")
+# async def saveVettedGames(subs):
 
 
