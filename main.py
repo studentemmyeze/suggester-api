@@ -871,7 +871,7 @@ async def suggestDepartment2(subs):
 
 # korotebets login api
 @app.get("/api/get-current-games")
-async def getCurrentGames(subs):
+async def getCurrentGames():
     bname = 'edu'
     query_string = ''' MATCH (n:BetDate)-[]-(al:Algorithm)-[]-(r:RawGames)
     where n.datePosted = date() return r as rawGames, al.algo as Algo
