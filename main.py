@@ -884,14 +884,14 @@ async def getCurrentGames():
         for record in result:
             print(record)
             gameList.append(record)
-            print(record['rawGames'])
-            print(record['rawGames']['properties'])
+#             print(record['rawGames'])
+#             print(record['rawGames']['properties'])
 
     except:
         print("ERROR@Get-Current-Games")
 
     try:
-        return {"status": 200, "gameList": record}
+        return {"status": 200, "gameList": gameList}
     except:
         return {"status": 500,"gameList": []}
 
