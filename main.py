@@ -876,15 +876,16 @@ async def getCurrentGames():
     query_string = ''' MATCH (n:BetDate)-[]-(al:Algorithm)-[]-(r:RawGames)
     where n.datePosted = date() return r as rawGames, al.algo as Algo
     '''
-
+    gameList = []
     print('query::', query_string)
     result = conn.query(query_string, {"bname" : bname})
     # print('result::', result)
     try:
         for record in result:
             print(record)
+            gameList.append(record)
             print(record['rawGames'])
-            print(record['rawGames'].properties)
+            print(record['rawGames']['properties'])
 
     except:
         print("ERROR@Get-Current-Games")
