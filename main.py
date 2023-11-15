@@ -882,7 +882,7 @@ async def getCurrentGames():
     # print('result::', result)
     try:
         for record in result:
-            print(record)
+#             print(record)
             gameList.append(record)
 #             print(record['rawGames'])
 #             print(record['rawGames']['properties'])
