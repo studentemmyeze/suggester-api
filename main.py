@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from urllib.parse import unquote
 from urllib.parse import urlparse
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
 import logging
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
@@ -868,6 +869,85 @@ async def suggestDepartment2(subs):
     except:
         return {"combostatus": 500,"suggest": []}
 
+async def save2Neo4jRawGames(dataF, Algo):
+    # Aura queries use an encrypted connection using the "neo4j+s" URI scheme
+    try:
+        await add_raw_games(Algo,dataF)
+        time.sleep( 5.0)
+        return True
+
+    except:
+        return False
+
+
+
+    # update_games(dataF)
+
+
+async def add_raw_games(Algo, rows, batch_size=5000):
+       # Adds paper nodes and (:Author)--(:Paper) and
+   # (:Paper)--(:Category) relationships to the Neo4j graph as a
+   # batch job.
+   query = '''
+   UNWIND $rows as row
+
+    WITH row
+Merge (l:BetDate{datePosted:date()}) with row,l
+Merge (al:Algorithm{algo:$Algo})<-[:ALGO_USED]-(l)
+WITH row, al, l
+   Merge (g:RawGames{team:row.team, bet:row.bet,typ_of_bet: row.typ_of_bet})-[:BET_FOR_THIS_DAY{betDate:l.datePosted}]->(al)
+
+
+
+   RETURN count(distinct g) as total
+   '''
+
+#    print('query::', query)
+   return await insert_data(query, rows, batch_size, Algo)
+
+
+async def insert_data(query, rows, batch_size = 10000, Algo = 3):
+    # Function to handle the updating the Neo4j database in batch mode.
+
+    total = 0
+    batch = 0
+    start = time.time()
+    result = None
+
+    while batch * batch_size < len(rows):
+
+        res = conn.query(query,
+                         parameters = {'rows': rows[batch*batch_size:(batch+1)*batch_size].to_dict('records'), 'Algo': Algo})
+        total += res[0]['total']
+        batch += 1
+        result = {"total":total,
+                  "batches":batch,
+                  "time":time.time()-start}
+        print(result)
+
+    return result
+
+
+# set raw games
+@app.get("/api/set-raw-games")
+async def setRawGames(betTotal0):
+# def saveTotalGen(betTotal=[]):
+    print(betTotal0)
+    answer = False
+    betTotal = json.loads(betTotal0)
+    suggests = betTotal[suggests]
+    algo = betTotal[algo]
+
+    df = pd.DataFrame(suggests)
+    try:
+        answer = await save2Neo4jRawGames(df, algo)
+    except:
+        print('ERROR UPLOADING raw bets suggestions')
+        pass
+    try:
+        return {"status": 200, "message": "success"}
+    except:
+        return {"status": 500,"message": "error"}
 
 # korotebets login api
 @app.get("/api/get-current-games")
