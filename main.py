@@ -927,10 +927,13 @@ async def insert_data(query, rows, batch_size = 10000, Algo = 3):
 
     return result
 
+class rawGames(BaseModel):
+    suggests: [] | None = None
+    algo: int
 
 # set raw games
-@app.post("/api/set-raw-games/")
-async def setRawGames(betTotal0):
+@app.post("/api/set-raw-games/{betTotal0}")
+async def setRawGames(betTotal0: RawGames):
 # def saveTotalGen(betTotal=[]):
     print(betTotal0)
     answer = False
