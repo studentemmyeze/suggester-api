@@ -929,7 +929,7 @@ async def insert_data(query, rows, batch_size = 10000, Algo = 3):
 
 
 # set raw games
-@app.get("/api/set-raw-games")
+@app.get("/api/set-raw-games/{betTotal0}")
 async def setRawGames(betTotal0):
 # def saveTotalGen(betTotal=[]):
     print(betTotal0)
