@@ -877,10 +877,12 @@ async def save2Neo4jRawGames(dataF, Algo):
     # Aura queries use an encrypted connection using the "neo4j+s" URI scheme
     try:
         await add_raw_games(Algo,dataF)
-        time.sleep( 5.0)
+#         time.sleep( 5.0)
+        print('@save2Neo4jRawGames: success after add_raw_games')
         return True
 
     except:
+        print('@save2Neo4jRawGames: error at add_raw_games')
         return False
 
 
@@ -906,7 +908,7 @@ WITH row, al, l
    RETURN count(distinct g) as total
    '''
 
-#    print('query::', query)
+   print('query add_raw_games::', query)
    return await insert_data(query, rows, batch_size, Algo)
 
 
@@ -966,7 +968,11 @@ async def setRawGames(betTotal0: RawGames):
         print('ERROR UPLOADING raw bets suggestions')
         pass
     try:
-        return {"status": 200, "message": "success"}
+        if answer:
+            return {"status": 200, "message": "success"}
+        else:
+            return {"status": 400, "message": "not found"}
+
     except:
         return {"status": 500,"message": "error"}
 
