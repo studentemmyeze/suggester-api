@@ -954,7 +954,7 @@ async def setRawGames(betTotal0: RawGames):
         car = [{"team": "Paris - Goteborg", "bet": "1 1X2", "typ_of_bet": "1X2", "odd": 99.0}, {"team": "Lys Sassandra - ASEC Mimosas", "bet": "X2 1X2", "typ_of_bet": "1X2", "odd": 99.0}]
         df0 = pd.DataFrame(car)
         print(df0)
-        suggests1 = json.loads(suggests))
+        suggests1 = json.loads(suggests)
         print('json loads:::', suggests1)
         df = pd.DataFrame(suggests1)
     except:
