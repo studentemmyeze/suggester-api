@@ -18,6 +18,10 @@ import requests
 # Load environment variables from .env file
 from dotenv import load_dotenv
 
+class RawGames(BaseModel):
+    suggests: str
+    algo: int
+
 class Neo4jConnection:
 
     def __init__(self, uri, user, pwd):
@@ -927,9 +931,7 @@ async def insert_data(query, rows, batch_size = 10000, Algo = 3):
 
     return result
 
-class RawGames(BaseModel):
-    suggests: str
-    algo: int
+
 
 # set raw games
 @app.post("/api/set-raw-games/{betTotal0}")
@@ -937,9 +939,11 @@ async def setRawGames(betTotal0: RawGames):
 # def saveTotalGen(betTotal=[]):
     print(betTotal0)
     answer = False
-    betTotal = json.loads(betTotal0)
-    suggests = betTotal[suggests]
-    algo = betTotal[algo]
+#     betTotal = json.loads(betTotal0)
+#     suggests = betTotal[suggests]
+#     algo = betTotal[algo]
+    suggests = betTotal.suggests
+    algo = betTotal.algo
 
     df = pd.DataFrame(suggests)
     try:
