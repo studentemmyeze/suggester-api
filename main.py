@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from urllib.parse import unquote
 from urllib.parse import urlparse
 from fastapi.middleware.cors import CORSMiddleware
-import pandas
+import pandas as pd
 import logging
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
@@ -949,7 +949,9 @@ async def setRawGames(betTotal0: RawGames):
     print('algo===', algo)
     df = None
     try:
-        df = pandas.DataFrame(suggests)
+        aq = pd.DataFrame({'A': [1, 2, 3]})
+        print('aq::', aq )
+        df = pd.DataFrame(suggests)
     except:
        print('@error with pandas')
     try:
