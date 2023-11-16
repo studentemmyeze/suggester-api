@@ -928,7 +928,7 @@ async def insert_data(query, rows, batch_size = 10000, Algo = 3):
     return result
 
 class rawGames(BaseModel):
-    suggests: str | None = None
+    suggests: str
     algo: int
 
 # set raw games
