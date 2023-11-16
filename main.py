@@ -927,7 +927,7 @@ async def insert_data(query, rows, batch_size = 10000, Algo = 3):
 
     return result
 
-class rawGames(BaseModel):
+class RawGames(BaseModel):
     suggests: str
     algo: int
 
