@@ -942,8 +942,8 @@ async def setRawGames(betTotal0: RawGames):
 #     betTotal = json.loads(betTotal0)
 #     suggests = betTotal[suggests]
 #     algo = betTotal[algo]
-    suggests = betTotal.suggests
-    algo = betTotal.algo
+    suggests = betTotal0.suggests
+    algo = betTotal0.algo
 
     print('suggests===', suggests)
     print('algo===', algo)
