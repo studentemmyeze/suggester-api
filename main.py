@@ -957,6 +957,7 @@ async def setRawGames(betTotal0: RawGames):
         df = pd.DataFrame(suggests)
     except:
        print('@error with pandas')
+
     try:
         answer = await save2Neo4jRawGames(df, algo)
     except:
