@@ -881,7 +881,8 @@ def save2Neo4jRawGames(dataF, Algo):
         print('@save2Neo4jRawGames: success after add_raw_games')
         return True
 
-    except:
+    except(e):
+        print(e)
         print('@save2Neo4jRawGames: error at add_raw_games')
         return False
 
@@ -963,10 +964,9 @@ async def setRawGames(betTotal0: RawGames):
        print('@error with pandas')
 
     try:
-        answer = await save2Neo4jRawGames(df, algo)
+        answer = save2Neo4jRawGames(df, algo)
     except:
         print('ERROR UPLOADING raw bets suggestions')
-        pass
     try:
         if answer:
             return {"status": 200, "message": "success"}
