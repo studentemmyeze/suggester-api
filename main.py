@@ -11,6 +11,7 @@ from urllib.parse import unquote
 from urllib.parse import urlparse
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
+import time
 import logging
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
@@ -883,7 +884,7 @@ def save2Neo4jRawGames(dataF, Algo):
         print('@save2Neo4jRawGames: success after add_raw_games')
         return True
 
-    except(e):
+    except Exception as e:
         print(e)
         print('@save2Neo4jRawGames: error at add_raw_games')
         return False
@@ -924,7 +925,7 @@ def waitForResourceAvailable(response, timeout, timewait):
         if response == True:
             break
 
-def insert_data(query, rows, batch_size = 10000, Algo = 3):
+def insert_data(query, rows, batch_size = 10000, Algo=3):
     # Function to handle the updating the Neo4j database in batch mode.
 
     total = 0
@@ -946,13 +947,13 @@ def insert_data(query, rows, batch_size = 10000, Algo = 3):
     return True
 
 
-import asyncio
+# import asyncio
 # set raw games
 @app.post("/api/set-raw-games/")
 async def setRawGames(betTotal0: RawGames):
 # def saveTotalGen(betTotal=[]):
     print(betTotal0)
-    answer = False
+    answer = None
 #     betTotal = json.loads(betTotal0)
 #     suggests = betTotal[suggests]
 #     algo = betTotal[algo]
@@ -976,6 +977,7 @@ async def setRawGames(betTotal0: RawGames):
 
     try:
         answer = save2Neo4jRawGames(df, algo)
+        waitForResourceAvailable(answer, 20,5)
     except:
         print('ERROR UPLOADING raw bets suggestions')
     try:
