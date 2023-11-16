@@ -947,6 +947,7 @@ async def setRawGames(betTotal0: RawGames):
 
     print('suggests===', suggests)
     print('algo===', algo)
+    df = None
     try:
         df = pandas.DataFrame(suggests)
     except:
