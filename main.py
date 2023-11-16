@@ -873,10 +873,10 @@ async def suggestDepartment2(subs):
     except:
         return {"combostatus": 500,"suggest": []}
 
-async def save2Neo4jRawGames(dataF, Algo):
+def save2Neo4jRawGames(dataF, Algo):
     # Aura queries use an encrypted connection using the "neo4j+s" URI scheme
     try:
-        await add_raw_games(Algo,dataF)
+        add_raw_games(Algo,dataF)
 #         time.sleep( 5.0)
         print('@save2Neo4jRawGames: success after add_raw_games')
         return True
@@ -890,7 +890,7 @@ async def save2Neo4jRawGames(dataF, Algo):
     # update_games(dataF)
 
 
-async def add_raw_games(Algo, rows, batch_size=5000):
+def add_raw_games(Algo, rows, batch_size=5000):
        # Adds paper nodes and (:Author)--(:Paper) and
    # (:Paper)--(:Category) relationships to the Neo4j graph as a
    # batch job.
@@ -909,10 +909,10 @@ WITH row, al, l
    '''
 
    print('query add_raw_games::', query)
-   return await insert_data(query, rows, batch_size, Algo)
+   return insert_data(query, rows, batch_size, Algo)
 
 
-async def insert_data(query, rows, batch_size = 10000, Algo = 3):
+def insert_data(query, rows, batch_size = 10000, Algo = 3):
     # Function to handle the updating the Neo4j database in batch mode.
 
     total = 0
