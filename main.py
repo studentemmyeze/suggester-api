@@ -876,7 +876,9 @@ async def suggestDepartment2(subs):
 def save2Neo4jRawGames(dataF, Algo):
     # Aura queries use an encrypted connection using the "neo4j+s" URI scheme
     try:
-        add_raw_games(Algo,dataF)
+        answer = None
+        answer = add_raw_games(Algo,dataF)
+        waitForResourceAvailable(answer, 20,5)
 #         time.sleep( 5.0)
         print('@save2Neo4jRawGames: success after add_raw_games')
         return True
@@ -912,6 +914,15 @@ WITH row, al, l
    print('query add_raw_games::', query)
    return insert_data(query, rows, batch_size, Algo)
 
+def waitForResourceAvailable(response, timeout, timewait):
+    timer = 0
+    while response == None:
+        time.sleep(timewait)
+        timer += timewait
+        if timer > timeout:
+            break
+        if response == True:
+            break
 
 def insert_data(query, rows, batch_size = 10000, Algo = 3):
     # Function to handle the updating the Neo4j database in batch mode.
@@ -932,10 +943,10 @@ def insert_data(query, rows, batch_size = 10000, Algo = 3):
                   "time":time.time()-start}
         print(result)
 
-    return result
+    return True
 
 
-
+import asyncio
 # set raw games
 @app.post("/api/set-raw-games/")
 async def setRawGames(betTotal0: RawGames):
@@ -952,13 +963,13 @@ async def setRawGames(betTotal0: RawGames):
     print('algo===', algo)
     df = None
     try:
-        aq = pd.DataFrame({'A': [1, 2, 3]})
-        print('@aq::', aq )
-        car = [{"team": "Paris - Goteborg", "bet": "1 1X2", "typ_of_bet": "1X2", "odd": 99.0}, {"team": "Lys Sassandra - ASEC Mimosas", "bet": "X2 1X2", "typ_of_bet": "1X2", "odd": 99.0}]
-        df0 = pd.DataFrame(car)
-        print(df0)
+#         aq = pd.DataFrame({'A': [1, 2, 3]})
+#         print('@aq::', aq )
+#         car = [{"team": "Paris - Goteborg", "bet": "1 1X2", "typ_of_bet": "1X2", "odd": 99.0}, {"team": "Lys Sassandra - ASEC Mimosas", "bet": "X2 1X2", "typ_of_bet": "1X2", "odd": 99.0}]
+#         df0 = pd.DataFrame(car)
+#         print(df0)
         suggests1 = json.loads(suggests)
-        print('json loads:::', suggests1)
+#         print('json loads:::', suggests1)
         df = pd.DataFrame(suggests1)
     except:
        print('@error with pandas')
