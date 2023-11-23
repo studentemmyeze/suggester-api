@@ -22,6 +22,10 @@ from dotenv import load_dotenv
 class RawGames(BaseModel):
     suggests: str
     algo: int
+class VetGames(BaseModel):
+    suggests: str
+    algo: int
+    vet_status: int
 
 class Neo4jConnection:
 
@@ -893,6 +897,20 @@ def save2Neo4jRawGames(dataF, Algo):
 
     # update_games(dataF)
 
+def save2Neo4jVetGames(dataF, Algo, VetSat):
+    # Aura queries use an encrypted connection using the "neo4j+s" URI scheme
+    try:
+        answer = None
+        answer = add_raw_games(Algo,dataF)
+        waitForResourceAvailable(answer, 20,5)
+#         time.sleep( 5.0)
+        print('@save2Neo4jRawGames: success after add_raw_games')
+        return True
+
+    except Exception as e:
+        print(e)
+        print('@save2Neo4jRawGames: error at add_raw_games')
+        return False
 
 def add_raw_games(Algo, rows, batch_size=5000):
        # Adds paper nodes and (:Author)--(:Paper) and
@@ -912,7 +930,7 @@ WITH row, al, l
    RETURN count(distinct g) as total
    '''
 
-   print('query add_raw_games::', query)
+#    print('query add_raw_games::', query)
    return insert_data(query, rows, batch_size, Algo)
 
 def waitForResourceAvailable(response, timeout, timewait):
@@ -925,7 +943,7 @@ def waitForResourceAvailable(response, timeout, timewait):
         if response == True:
             break
 
-def insert_data(query, rows, batch_size = 10000, Algo=3):
+def insert_data(query, rows, batch_size = 10000, Algo=3, isChinedu=False, vet_status=0):
     # Function to handle the updating the Neo4j database in batch mode.
 
     total = 0
@@ -951,26 +969,14 @@ def insert_data(query, rows, batch_size = 10000, Algo=3):
 # set raw games
 @app.post("/api/set-raw-games/")
 async def setRawGames(betTotal0: RawGames):
-# def saveTotalGen(betTotal=[]):
-    print(betTotal0)
+#     print(betTotal0)
     answer = None
-#     betTotal = json.loads(betTotal0)
-#     suggests = betTotal[suggests]
-#     algo = betTotal[algo]
+    df = None
     suggests = betTotal0.suggests
     algo = betTotal0.algo
 
-    print('suggests===', suggests)
-    print('algo===', algo)
-    df = None
     try:
-#         aq = pd.DataFrame({'A': [1, 2, 3]})
-#         print('@aq::', aq )
-#         car = [{"team": "Paris - Goteborg", "bet": "1 1X2", "typ_of_bet": "1X2", "odd": 99.0}, {"team": "Lys Sassandra - ASEC Mimosas", "bet": "X2 1X2", "typ_of_bet": "1X2", "odd": 99.0}]
-#         df0 = pd.DataFrame(car)
-#         print(df0)
         suggests1 = json.loads(suggests)
-#         print('json loads:::', suggests1)
         df = pd.DataFrame(suggests1)
     except:
        print('@error with pandas')
@@ -1016,7 +1022,35 @@ async def getCurrentGames():
         return {"status": 500,"gameList": []}
 
 
+# set raw games
+@app.post("/api/set-chinedu-results/")
+async def setVetGames(betTotal0: VetGames):
+#     print(betTotal0)
+    answer = None
+    df = None
+    suggests = betTotal0.suggests
+    algo = betTotal0.algo
+    vet_status = betTotal0.vet_status
 
+    try:
+        suggests1 = json.loads(suggests)
+        df = pd.DataFrame(suggests1)
+    except:
+       print('@error with pandas')
+
+    try:
+        answer = save2Neo4jVetGames(df, algo)
+        waitForResourceAvailable(answer, 20,5)
+    except:
+        print('ERROR UPLOADING raw bets suggestions')
+    try:
+        if answer:
+            return {"status": 200, "message": "success"}
+        else:
+            return {"status": 400, "message": "not found"}
+
+    except:
+        return {"status": 500,"message": "error"}
 
 # @app.get("/api/save-vetted-games")
 # async def saveVettedGames(subs):
